@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -11,7 +12,21 @@ import (
 	"github.com/pdfcpu/pdfcpu/pkg/pdfcpu/model"
 )
 
+func usage() {
+	fmt.Println(
+		`pdfencrypter [the path for input file or directory] [optional: owner password]`,
+	)
+}
+
 func main() {
+
+	var help bool
+	flag.BoolVar(&help, "h", false, "help")
+	flag.Parse()
+	if help {
+		usage()
+		return
+	}
 	args := os.Args[1:]
 
 	inputPath := args[0]
@@ -74,7 +89,7 @@ func run(inputPath, outputPath, password string) error {
 	fmt.Println("userPW:", conf.UserPW)
 	fmt.Println("ownerPW:", conf.OwnerPW)
 	fmt.Println()
-	err := api.EncryptFile("input.pdf", outputPath, conf)
+	err := api.EncryptFile(inputPath, outputPath, conf)
 	if err != nil {
 		return err
 	}
